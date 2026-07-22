@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, Sparkles, BookOpen, Cpu } from 'lucide-react';
+import { Sparkles, BookOpen, ExternalLink } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, totalCount }) {
   return (
@@ -7,10 +7,10 @@ export default function Navbar({ activeTab, setActiveTab, totalCount }) {
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      background: 'rgba(8, 11, 17, 0.9)',
+      background: 'rgba(6, 9, 17, 0.92)',
       backdropFilter: 'blur(16px)',
       borderBottom: '1px solid var(--border-subtle)',
-      padding: '16px 32px'
+      padding: '14px 32px'
     }}>
       <div style={{
         width: '100%',
@@ -20,89 +20,106 @@ export default function Navbar({ activeTab, setActiveTab, totalCount }) {
         flexWrap: 'wrap',
         gap: '16px'
       }}>
-        {/* Brand Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justify: 'center',
-            boxShadow: '0 0 25px rgba(59, 130, 246, 0.45)'
-          }}>
-            <Scale style={{ width: '26px', height: '26px', color: '#ffffff' }} />
-          </div>
+        {/* Brand Logo Header */}
+        <a 
+          href="#top" 
+          onClick={(e) => { e.preventDefault(); setActiveTab('explore'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}
+        >
+          <div className="brand-mark">PA</div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 className="font-heading" style={{ fontSize: '1.35rem', fontWeight: 800 }}>
-                STJ <span className="gradient-text">PRECEDENTES</span>
-              </h1>
-              <span className="badge-status badge-status-transit" style={{ fontSize: '0.7rem', padding: '3px 10px' }}>
-                CIVIL & PREV
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <strong style={{ fontSize: '1.2rem', color: '#ffffff', fontFamily: 'var(--font-heading)' }}>
+                Precedentes Atlas
+              </strong>
+              <span className="badge-status badge-status-transit" style={{ fontSize: '0.68rem', padding: '2px 8px' }}>
+                Civil & Prev
               </span>
             </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              Portal de Estudos de Precedentes Qualificados STJ + IA Gemini 2.5
-            </p>
+            <small style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              1.190 Precedentes STJ + IA Gemini 2.5
+            </small>
           </div>
-        </div>
+        </a>
 
-        {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.04)', padding: '4px', borderRadius: '14px', border: '1px solid var(--border-subtle)' }}>
+        {/* Center Navigation Links */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             onClick={() => setActiveTab('explore')}
-            className={`btn-secondary ${activeTab === 'explore' ? 'active' : ''}`}
             style={{
-              borderRadius: '10px',
-              padding: '10px 20px',
+              background: activeTab === 'explore' ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+              color: activeTab === 'explore' ? '#60a5fa' : 'var(--text-secondary)',
+              border: activeTab === 'explore' ? '1px solid rgba(59, 130, 246, 0.35)' : 'none',
+              borderRadius: 'var(--radius-md)',
+              padding: '8px 16px',
+              fontWeight: 600,
               fontSize: '0.88rem',
-              background: activeTab === 'explore' ? 'var(--accent-blue)' : 'transparent',
-              color: activeTab === 'explore' ? '#ffffff' : 'var(--text-secondary)',
-              border: 'none',
-              fontWeight: 600
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
             <BookOpen style={{ width: '16px', height: '16px' }} />
-            Explorar Acervo Completo ({totalCount})
+            Acervo ({totalCount})
           </button>
 
           <button
             onClick={() => setActiveTab('ai')}
-            className={`btn-secondary ${activeTab === 'ai' ? 'active' : ''}`}
             style={{
-              borderRadius: '10px',
-              padding: '10px 20px',
+              background: activeTab === 'ai' ? 'linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(79, 70, 229, 0.3))' : 'transparent',
+              color: activeTab === 'ai' ? '#c084fc' : 'var(--text-secondary)',
+              border: activeTab === 'ai' ? '1px solid rgba(139, 92, 246, 0.4)' : 'none',
+              borderRadius: 'var(--radius-md)',
+              padding: '8px 16px',
+              fontWeight: 600,
               fontSize: '0.88rem',
-              background: activeTab === 'ai' ? 'linear-gradient(135deg, #7c3aed, #4f46e5)' : 'transparent',
-              color: activeTab === 'ai' ? '#ffffff' : 'var(--text-secondary)',
-              border: 'none',
-              fontWeight: 600
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
             <Sparkles style={{ width: '16px', height: '16px', color: '#c084fc' }} />
-            Buscador Inteligente com IA
+            Buscador Inteligente IA
           </button>
+
+          <a
+            href="#metodologia"
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '0.88rem',
+              fontWeight: 500,
+              textDecoration: 'none',
+              padding: '8px 12px'
+            }}
+          >
+            Metodologia
+          </a>
         </nav>
 
-        {/* AI Status Badge */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '8px 16px',
-          borderRadius: '9999px',
-          background: 'rgba(16, 185, 129, 0.12)',
-          border: '1px solid rgba(16, 185, 129, 0.3)',
-          fontSize: '0.8rem',
-          color: '#34d399',
-          fontWeight: 600
-        }}>
-          <div className="pulse-dot"></div>
-          <Cpu style={{ width: '15px', height: '15px' }} />
-          <span>Gemini AI Conectado</span>
-        </div>
+        {/* STJ Source Link */}
+        <a
+          href="https://processo.stj.jus.br/repetitivos/temas_repetitivos/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            color: 'var(--text-secondary)',
+            fontSize: '0.82rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid var(--border-subtle)',
+            padding: '6px 14px',
+            borderRadius: 'var(--radius-md)'
+          }}
+        >
+          <span>Fonte Oficial STJ</span>
+          <ExternalLink style={{ width: '14px', height: '14px', color: '#60a5fa' }} />
+        </a>
       </div>
     </header>
   );

@@ -1,15 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import Navbar from './components/Navbar';
+import HeroSection from './components/HeroSection';
 import DashboardStats from './components/DashboardStats';
 import FilterSidebar from './components/FilterSidebar';
 import PrecedentCard from './components/PrecedentCard';
 import PrecedentDetailModal from './components/PrecedentDetailModal';
 import AiSearchSection from './components/AiSearchSection';
+import MethodologySection from './components/MethodologySection';
 
 import dataset from './data/stj_precedents.json';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('explore'); // 'explore' or 'ai'
+  const [activeTab, setActiveTab] = useState('explore');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [selectedSubCategory, setSelectedSubCategory] = useState('ALL');
@@ -21,10 +23,8 @@ export default function App() {
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 24;
 
-  // Filtered & Sorted Dataset
   const filteredData = useMemo(() => {
     let result = dataset.filter(item => {
-      // Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const numStr = String(item.number || '');
@@ -41,22 +41,18 @@ export default function App() {
         if (!matches) return false;
       }
 
-      // Main Category Match
       if (selectedCategory !== 'ALL' && item.category !== selectedCategory) {
         return false;
       }
 
-      // Sub-Category Match
       if (selectedSubCategory !== 'ALL' && item.subCategory !== selectedSubCategory) {
         return false;
       }
 
-      // Type Match
       if (selectedType !== 'ALL' && item.typeCode !== selectedType) {
         return false;
       }
 
-      // Phase Match
       if (selectedPhase !== 'ALL' && item.phaseGroup !== selectedPhase) {
         return false;
       }
@@ -64,7 +60,6 @@ export default function App() {
       return true;
     });
 
-    // Sorting Logic
     result.sort((a, b) => {
       if (sortBy === 'NUMBER_DESC') {
         return (b.number || 0) - (a.number || 0);
@@ -95,7 +90,6 @@ export default function App() {
     return result;
   }, [searchQuery, selectedCategory, selectedSubCategory, selectedType, selectedPhase, sortBy]);
 
-  // Paginated Subset
   const paginatedData = useMemo(() => {
     return filteredData.slice(0, page * ITEMS_PER_PAGE);
   }, [filteredData, page]);
@@ -110,22 +104,35 @@ export default function App() {
     setPage(1);
   };
 
+  const handleTriggerAiSearch = (text) => {
+    if (text) setSearchQuery(text);
+    setActiveTab('ai');
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%' }}>
-      {/* Top Navbar */}
+    <div id="top" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%' }}>
+      {/* Topbar Header */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         totalCount={dataset.length}
       />
 
+      {/* Hero Banner Section */}
+      <HeroSection
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onTriggerAiSearch={handleTriggerAiSearch}
+        dataset={dataset}
+      />
+
       {/* Main Full-Width Content Container */}
-      <main style={{ width: '100%', padding: '24px 32px', flex: 1 }}>
+      <main style={{ width: '100%', padding: '0 32px 40px', flex: 1 }} id="acervo">
         
-        {/* Dashboard Statistics */}
+        {/* Analytical Dashboard Cards */}
         <DashboardStats dataset={dataset} />
 
-        {/* AI Smart Search Tab */}
+        {/* AI Intelligent Search View */}
         {activeTab === 'ai' && (
           <AiSearchSection
             dataset={dataset}
@@ -133,7 +140,7 @@ export default function App() {
           />
         )}
 
-        {/* Main Explorer Layout: Sidebar + Grid */}
+        {/* Main Explorer Catalog Layout */}
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '28px', alignItems: 'start', width: '100%' }}>
           
           {/* Left Sidebar Filters */}
@@ -157,14 +164,12 @@ export default function App() {
           <div style={{ width: '100%' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
               <div>
-                <h2 className="font-heading" style={{ fontSize: '1.3rem', color: '#ffffff' }}>
-                  Precedentes Qualificados STJ ({filteredData.length})
+                <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Acervo Qualificado STJ
+                </span>
+                <h2 className="font-heading" style={{ fontSize: '1.4rem', color: '#ffffff' }}>
+                  {filteredData.length} Precedentes Encontrados
                 </h2>
-                {selectedSubCategory !== 'ALL' && (
-                  <span style={{ fontSize: '0.82rem', color: '#c084fc', fontWeight: 600 }}>
-                    Foco Específico: {selectedSubCategory}
-                  </span>
-                )}
               </div>
 
               <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -172,7 +177,7 @@ export default function App() {
               </span>
             </div>
 
-            {/* Grid with Wider Cards (minmax 420px) */}
+            {/* Grid Cards (Width 420px+) */}
             {filteredData.length === 0 ? (
               <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px' }}>
                 <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
@@ -217,6 +222,9 @@ export default function App() {
             )}
           </div>
         </div>
+
+        {/* Methodology Section */}
+        <MethodologySection />
       </main>
 
       {/* Precedent Detail Modal */}
@@ -227,24 +235,28 @@ export default function App() {
         />
       )}
 
-      {/* Footer */}
+      {/* Atlas Footer */}
       <footer style={{
         borderTop: '1px solid var(--border-subtle)',
-        padding: '24px 32px',
+        padding: '28px 32px',
         textAlign: 'center',
         fontSize: '0.82rem',
         color: 'var(--text-muted)',
-        background: 'rgba(8, 11, 17, 0.95)',
-        marginTop: '40px',
+        background: 'rgba(6, 9, 17, 0.95)',
         width: '100%'
       }}>
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <strong>STJ Precedentes Qualificados AI</strong> — Direito Civil & Previdenciário
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="brand-mark" style={{ width: '28px', height: '28px', fontSize: '0.8rem' }}>PA</div>
+            <strong style={{ color: '#ffffff' }}>Precedentes Atlas</strong>
+            <small style={{ color: 'var(--text-secondary)' }}>• Projeto independente de estudos jurídicos</small>
           </div>
           <div>
-            Powered by Google Gemini 2.5 AI & Base Oficial STJ (Temas Repetitivos, Controvérsias, IAC, SIRDR, PUIL)
+            Confirme sempre as informações na fonte oficial antes do uso profissional.
           </div>
+          <a href="https://processo.stj.jus.br/repetitivos/temas_repetitivos/" target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', textDecoration: 'none', fontWeight: 600 }}>
+            Pesquisa Oficial do STJ ↗
+          </a>
         </div>
       </footer>
     </div>
