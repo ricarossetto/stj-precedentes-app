@@ -1,4 +1,4 @@
-const GEMINI_API_KEY = 'AIzaSyBeSMwttStX1A4_MH0SWgSuyZFjZvngTpo';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 /**
@@ -6,6 +6,10 @@ const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemi
  */
 async function callGeminiApi(promptText, systemInstruction = '') {
   try {
+    if (!GEMINI_API_KEY) {
+      throw new Error('Chave de API do Gemini não configurada (VITE_GEMINI_API_KEY). Adicione no arquivo .env ou no Vercel Environment Variables.');
+    }
+
     const payload = {
       contents: [
         {
@@ -50,7 +54,6 @@ async function callGeminiApi(promptText, systemInstruction = '') {
  * Search precedents using Gemini AI natural language matching
  */
 export async function searchPrecedentsWithAI(query, precedentsDataset) {
-  // Provide top relevant sample context (first 80 precedents with theses)
   const contextItems = precedentsDataset
     .filter(p => p.tese || p.questao)
     .slice(0, 75)
